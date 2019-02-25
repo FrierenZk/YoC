@@ -57,6 +57,7 @@ func start() error {
 	go Data.StorageStart(moduleChannel["repository"])
 	go auditors[0].Listen(moduleChannel["port:32375"])
 	go auditors[1].Listen(moduleChannel["port:32376"])
+	var tick = time.NewTicker(time.Hour)
 	for true {
 		select {
 		case re := <-moduleChannel["repository"]:
@@ -65,7 +66,7 @@ func start() error {
 			return re
 		case re := <-moduleChannel["port:32376"]:
 			return re
-		case <-time.After(time.Minute * 10):
+		case <-tick.C:
 			YoCLog.DebugLogger.Println("time tick :", time.Now())
 		}
 	}
